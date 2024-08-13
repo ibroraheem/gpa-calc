@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPA Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-2xl font-bold mb-6 text-center">GPA Calculator</h1>
+
+        <div id="courses-container">
+            <!-- Courses will be added here dynamically -->
+        </div>
+
+        <div class="text-center">
+            <button 
+                onclick="addCourse()"
+                class="bg-blue-500 text-white py-2 px-4 rounded-lg mb-4">
+                Add Course
+            </button>
+        </div>
+
+        <div class="flex justify-between items-center">
+            <button 
+                onclick="calculateGPA()"
+                class="bg-green-500 text-white py-2 px-4 rounded-lg">
+                Calculate GPA
+            </button>
+            <span id="gpa-result" class="text-xl font-bold"></span>
+        </div>
+    </div>
+
+    <script>
+        const gradePoints = {
+            'A': 5,
+            'B': 4,
+            'C': 3,
+            'D': 2,
+            'F': 0
+        };
+
+        function addCourse() {
+            const container = document.getElementById('courses-container');
+
+            const courseDiv = document.createElement('div');
+            courseDiv.classList.add('grid', 'grid-cols-3', 'gap-4', 'mb-4');
+
+            // Course Name Input
+            const courseInput = document.createElement('input');
+            courseInput.type = 'text';
+            courseInput.placeholder = 'Course Name';
+            courseInput.classList.add('p-2', 'border', 'rounded', 'w-full');
+            courseDiv.appendChild(courseInput);
+
+            // Units Input
+            const unitsInput = document.createElement('input');
+            unitsInput.type = 'number';
+            unitsInput.placeholder = 'Units';
+            unitsInput.classList.add('p-2', 'border', 'rounded', 'w-full');
+            unitsInput.min = '1';
+            courseDiv.appendChild(unitsInput);
+
+            // Grade Selection
+            const select = document.createElement('select');
+            select.classList.add('p-2', 'border', 'rounded', 'w-full');
+            select.innerHTML = `
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+                <option value="D">D</option>
+                <option value="F">F</option>
+            `;
+            courseDiv.appendChild(select);
+
+            container.appendChild(courseDiv);
+        }
+
+        function calculateGPA() {
+            const courses = document.querySelectorAll('#courses-container div');
+            let totalPoints = 0;
+            let totalUnits = 0;
+
+            courses.forEach(course => {
+                const units = parseFloat(course.querySelector('input[type="number"]').value);
+                const grade = course.querySelector('select').value;
+                
+                if (!isNaN(units)) {
+                    totalPoints += gradePoints[grade] * units;
+                    totalUnits += units;
+                }
+            });
+
+            const gpa = totalUnits ? (totalPoints / totalUnits).toFixed(2) : 0;
+            document.getElementById('gpa-result').innerText = `GPA: ${gpa}`;
+        }
+    </script>
+</body>
+</html>
